@@ -31,7 +31,6 @@ def mass_enclosed_radii(pos, percentiles, weights=None):
         Weights associated with each particle to compute mass enclosed. 
         Will assume equal weights if you dont supply any.
     
-    
     Returns
     -------
     radii : numpy.ndarray

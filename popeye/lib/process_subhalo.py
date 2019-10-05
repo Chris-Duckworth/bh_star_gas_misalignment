@@ -6,9 +6,10 @@ Chris Duckworth cduckastro@gmail.com
 
 import numpy as np
 from astropy.cosmology import Planck15
-from time_conversion import snap_to_z
+from time_conversions import snap_to_z
+import snapshot as ss
 
-def load_particles_transform_relative(subfind_id, snapnum, parttype, com=False, basePath='/virgo/simulations/IllustrisTNG/L75n1820TNG/output', blen=75000):
+def load_particles_transform_relative(subfind_id, snapnum, parttype, com=False, basePath='/simons/scratch/sgenel/IllustrisTNG/L75n1820TNG/output', blen=75000):
     '''Given a suhhalo ID and snapshot, this function returns all of the particles of 
        a certain type. The coordinates returned are box wrapped in code units and then 
        transformed into physical units. Finally the positions and velocities are then      

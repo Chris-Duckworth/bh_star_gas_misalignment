@@ -6,7 +6,6 @@ Chris Duckworth cduckastro@gmail.com
 
 import numpy as np 
 
-
 def compute_anisotropy(radial, velocity):
     '''This function calculates the anisotropy for the complete set of particles defined
        relative to the halo. Returns both beta defined on magnitude of velocities and 
@@ -22,6 +21,12 @@ def compute_anisotropy(radial, velocity):
            - beta_vel_err (velocity ratio error)
            - beta_sigma (dispersion ratio) = 1 - sigma_tan*2 / sigma_rad**2
        '''
+
+    # this calculation fails if centered on individual particle (like with potential 
+    # minimum centers). fail-safing this by removing particles 0 distance from centre.
+    mask = np.linalg.norm(radial, axis=1) != 0
+    radial = radial[mask]
+    velocity = velocity[mask]
 
     # Finding projected velocity vector along radial direction for all particles.
     v_rad = np.vstack(np.einsum('ij,ij->i', velocity, radial) / np.einsum('ij,ij->i', radial, radial))*radial  
