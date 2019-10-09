@@ -53,7 +53,7 @@ def branch_tabulate(subfind, snapnum, tree, lookback_z, basepath='/simons/scratc
             central_flag = np.append(central_flag, int(0)) # central_flag == 0 if satellite.
 
     # Creating root subfind and snapnum columns.
-    root_sub = np.full(branch.SnapNum[mask].shape[0], subfind)
+    root_sub = np.full(branch.SubfindID[mask].shape[0], subfind)
     root_snap = np.full(branch.SnapNum[mask].shape[0], snapnum)
 
     # Converting masses to consistent units.
@@ -63,12 +63,12 @@ def branch_tabulate(subfind, snapnum, tree, lookback_z, basepath='/simons/scratc
     subhalo_mass = branch.SubhaloMassType[:,1][mask] * 10**10 * (1/Planck15.h)
     BH_mass = branch.SubhaloBHMass[mask] * 10**10 * (1/Planck15.h)
     BH_Mdot = branch.SubhaloBHMdot[mask] * 10**10 * (1/Planck15.h)
-
+    
     # Calculating BH_luminosity. This should deal with single floats or np.ndarray formats.
-    log10_Lbh_bol, log10_Lbh_xray = bh_luminosity.compute_luminosity(branch.SubhaloBHMass[mask], branch.SubhaloBHMdot[mask], 1)
-
+    log10_Lbh_bol, log10_Lbh_xray = bh_luminosity.compute_luminosity(branch.SubhaloBHMass[mask], branch.SubhaloBHMdot[mask], method=1)
+    
     # returning other black hole properties.
-    BH_CumEgyInjection_QM, BH_CumEgyInjection_RM, BH_CumMassGrowth_QM, BH_CumMassGrowth_RM, BH_Density, BHpart_count, BH_progenitors = bh_params_subhalo.compute_params(subfind_id, snapnum, basepath)
+    BH_CumEgyInjection_QM, BH_CumEgyInjection_RM, BH_CumMassGrowth_QM, BH_CumMassGrowth_RM, BH_Density, BHpart_count, BH_progenitors = bh_params_subhalo.compute_params_branch(branch.SubfindID[mask], branch.SnapNum[mask], basepath)
 
     # Creating pandas object to output. These are designed to appended to others for other branches.
     tab = pd.DataFrame({'branch_subfind':branch.SubfindID[mask], 'branch_snapnum':branch.SnapNum[mask],
@@ -78,6 +78,6 @@ def branch_tabulate(subfind, snapnum, tree, lookback_z, basepath='/simons/scratc
                         'log10_Lbh_bol':log10_Lbh_bol, 'log10_Lbh_xray':log10_Lbh_xray,
                         'BH_CumEgyInjection_QM':BH_CumEgyInjection_QM, 'BH_CumEgyInjection_RM':BH_CumEgyInjection_RM,
                         'BH_CumMassGrowth_QM':BH_CumMassGrowth_QM, 'BH_CumMassGrowth_RM':BH_CumMassGrowth_RM,
-                        'BH_local_gas_density':BH_Density, 'BHpart_count':BHpart_count, 'BH_progenitors':total_progenitors,
+                        'BH_local_gas_density':BH_Density, 'BHpart_count':BHpart_count, 'BH_progenitors':BH_progenitors,
                         'GasMetallicity':branch.SubhaloGasMetallicity[mask], 'branch_z':branch_z[mask]})
     return tab

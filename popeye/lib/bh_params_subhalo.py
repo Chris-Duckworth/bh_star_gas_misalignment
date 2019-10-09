@@ -6,6 +6,32 @@ provided in subhalo catalogues. basically just summing individual particle info.
 import numpy as np
 import snapshot as ss
 
+def compute_params_branch(subfind_id, snapnum, basePath='/simons/scratch/sgenel/IllustrisTNG/L75n1820TNG/output'):
+    '''
+    Returns compute_params for an array of subfind_ids and snaps.
+    '''
+    # creating arrays to append to.
+    BH_CumEgyInjection_QM = np.array([])
+    BH_CumEgyInjection_RM = np.array([])
+    BH_CumMassGrowth_QM = np.array([])
+    BH_CumMassGrowth_RM = np.array([])
+    BH_Density = np.array([])
+    BHpart_count = np.array([])
+    BH_progenitors = np.array([])
+    
+    for ind, sub in enumerate(subfind_id):
+        output = compute_params(sub, snapnum[ind], basePath)
+        BH_CumEgyInjection_QM = np.append(BH_CumEgyInjection_QM, output[0])
+        BH_CumEgyInjection_RM = np.append(BH_CumEgyInjection_RM, output[1])
+        BH_CumMassGrowth_QM = np.append(BH_CumMassGrowth_QM, output[2])
+        BH_CumMassGrowth_RM = np.append(BH_CumMassGrowth_RM, output[3])
+        BH_Density = np.append(BH_Density, output[4])
+        BHpart_count = np.append(BHpart_count, output[5])
+        BH_progenitors = np.append(BH_progenitors, output[6]) 
+    
+    return BH_CumEgyInjection_QM, BH_CumEgyInjection_RM, BH_CumMassGrowth_QM, BH_CumMassGrowth_RM, BH_Density, BHpart_count, BH_progenitors
+
+
 def compute_params(subfind_id, snapnum, basePath='/simons/scratch/sgenel/IllustrisTNG/L75n1820TNG/output'):
     '''
     Function that returns integrated black hole properties for a given subhalo at a certain
@@ -58,7 +84,7 @@ def compute_params(subfind_id, snapnum, basePath='/simons/scratch/sgenel/Illustr
 
     if props['count'] == 0:
         # If no black hole in the subhalo returning -inf for all values.
-        return -np.inf, -np.inf, -np.inf, -np.inf, -np.inf, 0,
+        return -np.inf, -np.inf, -np.inf, -np.inf, -np.inf, 0, 0
     elif props['count'] == 1:
         return 1e10*props['BH_CumEgyInjection_QM'][0], 1e10*props['BH_CumEgyInjection_RM'][0], 1e10*props['BH_CumMassGrowth_QM'][0], 1e10*props['BH_CumMassGrowth_RM'][0], 1e10*props['BH_Density'][0], props['count'], props['BH_Progs'][0]
     else:

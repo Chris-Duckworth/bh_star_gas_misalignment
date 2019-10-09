@@ -27,8 +27,8 @@ def compute_luminosity_MH(mbh, accbh, radia_efficient_agn):
        For more information see: Habouzit+19: Linking galaxy structural properties... 
        '''
 
-    mbh= np.array([p*1e10/h for p in mbh]) ## Msun                                                                                                                                    
-    accbh= np.array([p*10.22 for p in accbh]) ## Msun/yr                                                                                                                              
+    mbh = np.array([p*1e10/h for p in mbh]) ## Msun                                                                                                                                    
+    accbh = np.array([p*10.22 for p in accbh]) ## Msun/yr                                                                                                                          
     edd = np.array([4*np.pi*cte_G*cte_m_p*p/cte_eps_r/cte_sigma_t/cte_c*(3.154*10**7) for p in mbh])
     fedd = np.array([np.log10(accbh[p]/edd[p]) for p in range(len(edd))])
     
@@ -55,7 +55,7 @@ def compute_luminosity_MH(mbh, accbh, radia_efficient_agn):
     
     log10_L_xray = np.array([(log10_L_bol[p]-33.6) - np.log10(corr_BC[p])+33.6 for p in range(len(edd))])
     
-    return log10_L_bol,log10_L_xray
+    return log10_L_bol, log10_L_xray
     
 def compute_luminosity(mbh, accbh, method):
     '''This function calculates the BH luminosity through one of two methods. Required
@@ -85,7 +85,8 @@ def compute_luminosity(mbh, accbh, method):
         ## easy method
         if method==1:
             log10_L_bol = np.log10((cte_eps_r/(1.-cte_eps_r))*9*10**20*accbh/(3.16*10**7)*1.98892*10**33)
-    
+            print(log10_L_bol)
+            
         ## not so easy method
         if method==2:
             log10_L_bol=[]
