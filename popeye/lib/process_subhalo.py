@@ -47,7 +47,7 @@ def load_particles_transform_relative(subfind_id, snapnum, parttype, com=False, 
     if parttype == 'DM':
         props = ss.loadSubhalo(basePath=basePath, snapNum=snapnum, id=subfind_id, partType=parttype, fields = ['Coordinates', 'Velocities', 'Potential'])
         # wrapping particle coordinates.
-        pos_code = box_wrap(props['Coordinates'], blen)
+        pos_code = coordinate_transforms.box_wrap(props['Coordinates'], blen)
         # transforming to physical coordinates.
         pos_physical, vel_physical = coordinate_transforms.code_to_physical(pos_code, props['Velocities'], z)
         
@@ -62,7 +62,7 @@ def load_particles_transform_relative(subfind_id, snapnum, parttype, com=False, 
     elif (parttype == 'star') | (parttype == 'gas'):
         props = ss.loadSubhalo(basePath=basePath, snapNum=snapnum, id=subfind_id, partType=parttype, fields = ['Coordinates', 'Velocities', 'Potential', 'Masses'])
         # wrapping particle coordinates.
-        pos_code = box_wrap(props['Coordinates'], blen)
+        pos_code = coordinate_transforms.box_wrap(props['Coordinates'], blen)
         # transforming to physical coordinates.
         pos_physical, vel_physical = coordinate_transforms.code_to_physical(pos_code, props['Velocities'], z)
         
