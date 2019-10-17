@@ -1,0 +1,2 @@
+/home/cduckworth/bh_star_gas_misalignment/popeye/lib/velocity_anisotropy.py:74: RuntimeWarning: invalid value encountered in double_scalars
+  beta_disp_av = 1 - disp_tan**2/(2*disp_rad**2)

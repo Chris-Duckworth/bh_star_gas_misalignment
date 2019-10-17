@@ -3,7 +3,18 @@ coordinate_transforms - functions that convert code/physical units and box wrap.
 '''
 
 import numpy as np
-from astropy.cosmology import Planck15
+
+# defining planck 15 cosmology. astropy is off for some reason.
+HubbleParam = 0.6774
+OmegaLambda = 0.6911
+Omega0 = 0.3089
+
+def H(z):
+    term1 = Omega0*(1+z)**3;
+    term2 = (1-Omega0-OmegaLambda)*(1+z)**2;
+    hubz = 100 * HubbleParam * np.sqrt(term1+term2+OmegaLambda)
+    return hubz
+
 
 def box_wrap(pos_comoving, box_side_length):
     '''This function takes raw comoving (i.e. code units) coordinates (for a given object)
@@ -26,9 +37,9 @@ def code_to_physical(pos_comoving, vel_comoving, z):
     ''' This function accepts the code units (ckpc/h for pos) and transforms them to
         physical units including Hubble flow for vel.'''
 
-    pos_physical = pos_comoving * 1 / (1 + z) * 1 / Planck15.h
+    pos_physical = pos_comoving * 1 / (1 + z) * 1 / HubbleParam
     vel_peculiar = vel_comoving * 1 / np.sqrt(1 + z)
-    vel_physical_total = vel_peculiar + Planck15.H(z).value * pos_physical / 1000
+    vel_physical_total = vel_peculiar + H(z) * pos_physical / 1000
     return pos_physical, vel_physical_total
 
 
@@ -40,9 +51,9 @@ def physical_to_code(pos_physical, vel_physical_total, z):
         Make sure that physical pos input are in kpc.'''
 
     # Using inbuilt astropy function with Planck15 cosmology to calc Hubble parameter.
-    vel_physical_peculiar = vel_physical_total - Planck15.H(z).value * pos_physical / 1000 
+    vel_physical_peculiar = vel_physical_total - H(z) * pos_physical / 1000 
     vel_comoving = vel_physical_peculiar * np.sqrt(1 + z)
-    pos_comoving = pos_physical * (1 + z) * Planck15.h
+    pos_comoving = pos_physical * (1 + z) * HubbleParam
     return pos_comoving, vel_comoving
 
 

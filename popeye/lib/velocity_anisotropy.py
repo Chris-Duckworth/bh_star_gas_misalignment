@@ -34,10 +34,7 @@ def compute_anisotropy(radial, velocity, weights=None):
            - beta_vel (velocity ratio) = 1 - v_tan**2 / v_rad**2 
            - beta_vel_err (velocity ratio error)
            - beta_sigma (dispersion ratio) = 1 - sigma_tan*2 / sigma_rad**2
-
-    # FIX WEIGHTS
     '''
-    
     # if weights are not supplied, then assuming equal.
     if weights is None:
         weights = np.ones(radial.shape[0])
