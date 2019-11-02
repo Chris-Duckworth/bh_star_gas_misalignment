@@ -40,6 +40,36 @@ def combine_with_tree_split_on_pa(tab, tree_tab, lower_PA=30, upper_PA=30):
 
     return all_tab, align_tab, mis_tab
 
+def combine_with_tree_split_on_BHlum(tab, tree_tab, BHlum=44):
+    '''
+    Function that takes a defined sample in the TNG100 - MPL-8 matched population, combines
+    with supplementary tree info (for the main branch) and then splits on BH luminosity at 
+    z=0. Does not return tree info - only for z=0 to plot PA distributions!!
+    '''
+    all_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values)]
+    z0_all_tab = all_tab[all_tab.branch_snapnum.values == all_tab.root_snap.values]
+    z0_all_tab = tab.merge(z0_all_tab, left_on='subfind_id', right_on='branch_subfind')
+    
+    high_lum = z0_all_tab[z0_all_tab.log10_Lbh_bol.values >= BHlum]
+    low_lum = z0_all_tab[z0_all_tab.log10_Lbh_bol.values < BHlum]
+    return z0_all_tab, low_lum, high_lum
+    
+def combine_with_tree_split_on_BHlum_percentile(tab, tree_tab, lower_percentile=33, upper_percentile=66):
+    '''
+    Function that takes a defined sample in the TNG100 - MPL-8 matched population, combines
+    with supplementary tree info (for the main branch) and then splits on percentiles of BH 
+    luminosity at z=0. Does not return tree info - only for z=0 to plot PA distributions!!
+    '''
+    all_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values)]
+    z0_all_tab = all_tab[all_tab.branch_snapnum.values == all_tab.root_snap.values]
+    z0_all_tab = tab.merge(z0_all_tab, left_on='subfind_id', right_on='branch_subfind')
+
+    lower_BHlum = np.percentile(z0_all_tab.log10_Lbh_bol.values, lower_percentile)
+    upper_BHlum = np.percentile(z0_all_tab.log10_Lbh_bol.values, upper_percentile)
+	
+    high_lum = z0_all_tab[z0_all_tab.log10_Lbh_bol.values >= upper_BHlum]
+    low_lum = z0_all_tab[z0_all_tab.log10_Lbh_bol.values < lower_BHlum]
+    return z0_all_tab, low_lum, high_lum
 
 def combine_with_tree_split_on_pa_and_group(tab, tree_tab, lower_PA=30, upper_PA=30):
     '''
@@ -63,7 +93,7 @@ def combine_with_tree_split_on_pa_and_group(tab, tree_tab, lower_PA=30, upper_PA
     return cen_all_tab, cen_align_tab, cen_mis_tab, sat_all_tab, sat_align_tab, sat_mis_tab
 
 
-def combine_with_tree_split_on_pa_and_mass(tab, tree_tab, lower_PA=30, upper_PA=30, lower_percentile=25, upper_percentile=75, verbose=False):
+def combine_with_tree_split_on_pa_and_mass_percentile(tab, tree_tab, lower_PA=30, upper_PA=30, lower_percentile=25, upper_percentile=75, verbose=False):
     '''
     Function that takes a defined sample in the TNG100 - MPL-8 matched population, combines
     with supplementary tree info (for the main branch) and then splits on both PA and mass 
@@ -81,6 +111,51 @@ def combine_with_tree_split_on_pa_and_mass(tab, tree_tab, lower_PA=30, upper_PA=
     low_mass_all_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[tab.stel_mass.values <= lower_mass])]
     low_mass_align_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[(tab.pa_offset.values < lower_PA) & (tab.stel_mass.values <= lower_mass)])]
     low_mass_mis_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[(tab.pa_offset.values >= upper_PA) & (tab.stel_mass.values <= lower_mass)] )]
+    
+    if verbose == True:
+        print('High mass. All:'+str(high_mass_all_tab.shape[0] / 50)+' Aligned:'+str(high_mass_align_tab.shape[0] /50)+' Misaligned:'+str(high_mass_mis_tab.shape[0] /50))
+        print('Low mass.  All:'+str(low_mass_all_tab.shape[0] /50)+' Aligned:'+str(low_mass_align_tab.shape[0] / 50)+' Misaligned:'+str(low_mass_mis_tab.shape[0] / 50))
+    
+    return high_mass_all_tab, high_mass_align_tab, high_mass_mis_tab, low_mass_all_tab, low_mass_align_tab, low_mass_mis_tab
+
+def combine_with_tree_split_on_pa_and_mass(tab, tree_tab, lower_PA=30, upper_PA=30, lower_mass=10**10, upper_mass=10**11, verbose=False):
+    '''
+    Function that takes a defined sample in the TNG100 - MPL-8 matched population, combines
+    with supplementary tree info (for the main branch) and then splits on both PA and mass 
+    of the object at z=0.
+    By default the top and bottom quartile are returned.
+    Returns 6 tables; total info, aligned and misaligned for high mass and low mass.
+    ''' 
+
+    high_mass_all_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[tab.stel_mass.values > upper_mass])]
+    high_mass_align_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[(tab.pa_offset.values < lower_PA) & (tab.stel_mass.values > upper_mass)])]
+    high_mass_mis_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[(tab.pa_offset.values >= upper_PA) & (tab.stel_mass.values > upper_mass)] )]
+        
+    low_mass_all_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[tab.stel_mass.values <= lower_mass])]
+    low_mass_align_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[(tab.pa_offset.values < lower_PA) & (tab.stel_mass.values <= lower_mass)])]
+    low_mass_mis_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[(tab.pa_offset.values >= upper_PA) & (tab.stel_mass.values <= lower_mass)] )]
+    
+    if verbose == True:
+        print('High mass. All:'+str(high_mass_all_tab.shape[0] / 50)+' Aligned:'+str(high_mass_align_tab.shape[0] /50)+' Misaligned:'+str(high_mass_mis_tab.shape[0] /50))
+        print('Low mass.  All:'+str(low_mass_all_tab.shape[0] /50)+' Aligned:'+str(low_mass_align_tab.shape[0] / 50)+' Misaligned:'+str(low_mass_mis_tab.shape[0] / 50))
+    
+    return high_mass_all_tab, high_mass_align_tab, high_mass_mis_tab, low_mass_all_tab, low_mass_align_tab, low_mass_mis_tab
+
+def combine_with_tree_split_on_pa_and_BHmass(tab, tree_tab, lower_PA=30, upper_PA=30, lower_mass=10**8, upper_mass=10**8, verbose=False):
+    '''
+    Function that takes a defined sample in the TNG100 - MPL-8 matched population, combines
+    with supplementary tree info (for the main branch) and then splits on both PA and black 
+    hole mass of the object at z=0.
+    Returns 6 tables; total info, aligned and misaligned for high mass and low mass.
+    ''' 
+
+    high_mass_all_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[tab.BHmass.values > upper_mass])]
+    high_mass_align_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[(tab.pa_offset.values < lower_PA) & (tab.BHmass.values > upper_mass)])]
+    high_mass_mis_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[(tab.pa_offset.values >= upper_PA) & (tab.BHmass.values > upper_mass)] )]
+        
+    low_mass_all_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[tab.BHmass.values <= lower_mass])]
+    low_mass_align_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[(tab.pa_offset.values < lower_PA) & (tab.BHmass.values <= lower_mass)])]
+    low_mass_mis_tab = tree_tab[tree_tab.root_subfind.isin(tab.subfind_id.values[(tab.pa_offset.values >= upper_PA) & (tab.BHmass.values <= lower_mass)] )]
     
     if verbose == True:
         print('High mass. All:'+str(high_mass_all_tab.shape[0] / 50)+' Aligned:'+str(high_mass_align_tab.shape[0] /50)+' Misaligned:'+str(high_mass_mis_tab.shape[0] /50))
