@@ -411,6 +411,7 @@ def plot_two_residual_LM(QU, SF, mass_tab, property, condition, ax, lower_mass=1
 						   QU_align_tab_LM.branch_lookback_time.values[QU_align_tab_LM[property].values > condition], QU_align_tab_LM[property].values[QU_align_tab_LM[property].values > condition], ax[1], '$M_{stel} < 10^{10.2}M_{\odot}$, $\Delta$PA $\geq 30^{\circ}$',color='steelblue', linestyle='dashed', peak=peak)
 	plot_property_residual(QU_counter_tab_LM.branch_lookback_time.values[QU_counter_tab_LM[property].values > condition], QU_counter_tab_LM[property].values[QU_counter_tab_LM[property].values > condition], 
 						   QU_align_tab_LM.branch_lookback_time.values[QU_align_tab_LM[property].values > condition], QU_align_tab_LM[property].values[QU_align_tab_LM[property].values > condition], ax[1], r'$M_{stel} < 10^{10.2}M_{\odot}$, $\Delta$PA $\geq 150^{\circ}$', color='steelblue', linestyle='dotted', alpha=0.1)
+
 	return 
 
 
