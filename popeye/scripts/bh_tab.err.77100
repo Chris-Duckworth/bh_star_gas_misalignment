@@ -1,0 +1,15 @@
+/home/cduckworth/bh_star_gas_misalignment/popeye/lib/bh_luminosity.py:33: RuntimeWarning: invalid value encountered in double_scalars
+  fedd = np.array([np.log10(accbh[p]/edd[p]) for p in range(len(edd))])
+/home/cduckworth/bh_star_gas_misalignment/popeye/lib/bh_luminosity.py:37: RuntimeWarning: divide by zero encountered in log10
+  log10_L_bol = np.array([np.log10((cte_eps_r/(1.-cte_eps_r))*9*10**20*accbh[p]/(3.16*10**7)*1.98892*10**33) for p in range(len(edd))])
+/home/cduckworth/bh_star_gas_misalignment/popeye/lib/bh_luminosity.py:54: RuntimeWarning: divide by zero encountered in double_scalars
+  corr_BC = np.array([10.83*(10**(log10_L_bol[p]-33.6)/1e10)**0.28+6.08*(10**(log10_L_bol[p]-33.6)/1e10)**-0.020 for p in range(len(edd))])
+Exception ignored in: <function TreeDB.__del__ at 0x2aaac9f6fa60>
+Traceback (most recent call last):
+  File "/home/cduckworth/scripts/illustris_python/readtreeHDF5.py", line 145, in __del__
+  File "/cm/shared/sw/pkg/devel/python3/3.7.3/lib/python3.7/site-packages/h5py/_hl/files.py", line 413, in close
+  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
+  File "h5py/h5f.pyx", line 264, in h5py.h5f.get_obj_ids
+  File "h5py/h5i.pyx", line 37, in h5py.h5i.wrap_identifier
+ImportError: sys.meta_path is None, Python is likely shutting down

@@ -21,7 +21,7 @@ def box_wrap(pos_comoving, box_side_length):
        and wraps them. 
        The first position in the array supplied will be used to centre the object around 
        the origin. Therefore the returned particles will have been shifted and not in 
-       origin position relative to the box.     
+       original position relative to the box.     
     '''
     # roughly shifting object to origin.
     dx = pos_comoving - pos_comoving[0]
